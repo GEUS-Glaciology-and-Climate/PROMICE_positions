@@ -122,11 +122,11 @@ for st,stnam in enumerate(meta.name):
             ax[0].set_title(stnam+' latitude')
 
             cc+=1
-            ax[cc].plot(df['date'],lon,'.',color='orange')
+            ax[cc].plot(df['date'],lon,'.',color='k')
             ax[cc].set_title(stnam+' longitude')
     
             cc+=1
-            ax[cc].plot(df['date'],elev,'.',color='orange')
+            ax[cc].plot(df['date'],elev,'.',color='k')
             ax[cc].set_title(stnam+' elevation')
             ax[cc].set_ylabel('meters a.s.l')
         
