@@ -46,6 +46,9 @@ meta=pd.read_csv('./meta/site_info.csv')
 
 # site by site position stats
 stats=np.zeros((7,len(meta)))
+date0=['']*len(meta)
+date1=['']*len(meta)
+years=np.zeros(len(meta))
 
 for st,stnam in enumerate(meta.name):
 
@@ -161,12 +164,21 @@ for st,stnam in enumerate(meta.name):
         stats[6,st]=geopy.distance.distance(coords_1, coords_2).m
         # print(df.name[k],df.name[k],str("%.0f"%(dist)))
         
+        date0[st]=df['date'][v[0]]
+        date1[st]=df['date'][v[n-1]]
+        
+        duration = df['date'][v[n-1]] - df['date'][v[0]]                         # For build-in functions
+        duration_in_s = duration.total_seconds()
+        years[st] = divmod(duration_in_s, 86400)[0]/365.25
+
         if ly=='p': plt.savefig('./figs/'+stnam+'.png', dpi=72,bbox_inches = 'tight',pad_inches = 0)
         if ly=='x':plt.show()
 
 
-df2 = pd.DataFrame(columns=['name','lat0','lat1','lon0','lon1','displacement meters','elev0','elev1','delta elev'])
+df2 = pd.DataFrame(columns=['name','start','end','delta time','lat0','lat1','lon0','lon1','displacement meters','elev0','elev1','delta elev'])
 df2["name"]=pd.Series(meta.name)
+df2["start"]=pd.Series(date0[:])
+df2["end"]=pd.Series(date1[:])
 df2["lat0"]=pd.Series(stats[0,:])
 df2["lat1"]=pd.Series(stats[1,:])
 df2["lon0"]=pd.Series(stats[2,:])
@@ -175,5 +187,6 @@ df2["elev0"]=pd.Series(stats[4,:])
 df2["elev1"]=pd.Series(stats[5,:])
 df2["displacement meters"]=pd.Series(stats[6,:])
 df2["delta elev"]=df2["elev1"]-df2["elev0"]
+df2["delta time"]=pd.Series(years[:])
 
 if wo:df2.to_csv('./stats/PROMICE_positions_distance_stats.csv')
