@@ -1,3 +1,3 @@
 # PROMICE_positions
 
-identifies valid start and end dates from which to compute station history net displacement
+identifies valid start and end dates (red squares) from which to compute AWS position change over time
