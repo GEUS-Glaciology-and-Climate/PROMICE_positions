@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import datetime
-# from datetime import datetime
-# from matplotlib.pyplot import figure
+import geopy.distance
+
 
 th=1 ; th=2
 formatx='{x:,.3f}'; fs=24 ; fs=16
@@ -45,7 +45,7 @@ meta=pd.read_csv('./meta/site_info.csv')
 # print(meta.columns)
 
 # site by site position stats
-stats=np.zeros((6,len(meta)))
+stats=np.zeros((7,len(meta)))
 
 for st,stnam in enumerate(meta.name):
 
@@ -118,15 +118,15 @@ for st,stnam in enumerate(meta.name):
         
 
         if ly!='n':
-            ax[cc].plot(df['date'],df['LatitudeGPS_HDOP<1(degN)'],'.')
+            ax[cc].plot(df['date'],df['LatitudeGPS_HDOP<1(degN)'],'.',color='orange')
             ax[0].set_title(stnam+' latitude')
 
             cc+=1
-            ax[cc].plot(df['date'],lon,'.')
+            ax[cc].plot(df['date'],lon,'.',color='orange')
             ax[cc].set_title(stnam+' longitude')
     
             cc+=1
-            ax[cc].plot(df['date'],elev,'.')
+            ax[cc].plot(df['date'],elev,'.',color='orange')
             ax[cc].set_title(stnam+' elevation')
             ax[cc].set_ylabel('meters a.s.l')
         
@@ -137,29 +137,35 @@ for st,stnam in enumerate(meta.name):
 
         cc=0        
         stats[0,st]=lat[v[0]] 
-        ax[cc].plot(df['date'][v[0]],stats[0,st],'s',color='r')        
+        ax[cc].plot(df['date'][v[0]],stats[0,st],'s',color='g',label='first valid datum')        
         stats[1,st]=lat[v[n-1]]
-        ax[cc].plot(df['date'][v[n-1]],stats[1,st],'s',color='r')
+        ax[cc].plot(df['date'][v[n-1]],stats[1,st],'s',color='r',label='last valid datum')
+        ax[cc].legend()
 
         cc+=1
 
         stats[2,st]=lon[v[0]] 
-        ax[cc].plot(df['date'][v[0]],stats[2,st],'s',color='r')        
+        ax[cc].plot(df['date'][v[0]],stats[2,st],'s',color='g')        
         stats[3,st]=lon[v[n-1]]
         ax[cc].plot(df['date'][v[n-1]],stats[3,st],'s',color='r')
 
         cc+=1
 
         stats[4,st]=elev[v[0]] 
-        ax[cc].plot(df['date'][v[0]],stats[4,st],'s',color='r')        
+        ax[cc].plot(df['date'][v[0]],stats[4,st],'s',color='g')        
         stats[5,st]=elev[v[n-1]]
         ax[cc].plot(df['date'][v[n-1]],stats[5,st],'s',color='r')
+        
+        coords_1 = (stats[0,st],stats[2,st])
+        coords_2 = (stats[1,st],stats[3,st])
+        dist=geopy.distance.distance(coords_1, coords_2).m
+        # print(df.name[k],df.name[k],str("%.0f"%(dist)))
         
         if ly=='p': plt.savefig('./figs/'+stnam+'.png', dpi=100,bbox_inches = 'tight',pad_inches = 0)
         if ly=='x':plt.show()
 
 
-df2 = pd.DataFrame(columns=['name','lat0','lat1','lon0','lon1','elev0','elev1','delta elev'])
+df2 = pd.DataFrame(columns=['name','lat0','lat1','lon0','lon1','displacement meters','elev0','elev1','delta elev'])
 df2["name"]=pd.Series(meta.name)
 df2["lat0"]=pd.Series(stats[0,:])
 df2["lat1"]=pd.Series(stats[1,:])
@@ -167,6 +173,7 @@ df2["lon0"]=pd.Series(stats[2,:])
 df2["lon1"]=pd.Series(stats[3,:])
 df2["elev0"]=pd.Series(stats[4,:])
 df2["elev1"]=pd.Series(stats[5,:])
+df2["displacement meters"]=pd.Series(stats[6,:])
 df2["delta elev"]=df2["elev1"]-df2["elev0"]
 
 if wo:df2.to_csv('./stats/PROMICE_position_stats.csv')
