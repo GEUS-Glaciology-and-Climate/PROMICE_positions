@@ -155,7 +155,7 @@ for st,stnam in enumerate(meta.name):
         stats[5,st]=elev[v[n-1]]
         ax[cc].plot(df['date'][v[n-1]],stats[5,st],'s',color='r')
         
-        if ly=='p': plt.savefig('./figs/'+stnam+'.png', dpi=250)
+        if ly=='p': plt.savefig('./figs/'+stnam+'.png', dpi=100,bbox_inches = 'tight',pad_inches = 0)
         if ly=='x':plt.show()
 
 
