@@ -13,9 +13,7 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import datetime
 import geopy.distance
-
 
 th=1 ; th=2
 formatx='{x:,.3f}'; fs=24 ; fs=16
@@ -130,19 +128,24 @@ for st,stnam in enumerate(meta.name):
     
             cc+=1
             ax[cc].plot(df['date'],elev,'.',color='k')
-            ax[cc].set_title(stnam+' elevation')
             ax[cc].set_ylabel('meters a.s.l')
         
         v=np.where(~np.isnan(df['lat']))
         v=v[0]
         n=len(v)
         print(v[0],df['date'][v[0]])
+        x=[df['date'][v[0]],df['date'][v[n-1]]]
+
+
+
 
         cc=0        
         stats[0,st]=lat[v[0]] 
         ax[cc].plot(df['date'][v[0]],stats[0,st],'s',color='g',alpha=0.5,label='first valid datum')        
         stats[1,st]=lat[v[n-1]]
         ax[cc].plot(df['date'][v[n-1]],stats[1,st],'s',color='r',alpha=0.5,label='last valid datum')
+        y=[stats[0,st],stats[1,st]]
+        ax[cc].plot(x, y, '--',c='b',label='approximation')
         ax[cc].legend()
 
         cc+=1
@@ -152,12 +155,22 @@ for st,stnam in enumerate(meta.name):
         stats[3,st]=lon[v[n-1]]
         ax[cc].plot(df['date'][v[n-1]],stats[3,st],'s',color='r',alpha=0.5)
 
+        y=[stats[2,st],stats[3,st]]
+        ax[cc].plot(x, y, '--',c='b')
+
         cc+=1
 
         stats[4,st]=elev[v[0]] 
         ax[cc].plot(df['date'][v[0]],stats[4,st],'s',color='g',alpha=0.5)        
         stats[5,st]=elev[v[n-1]]
         ax[cc].plot(df['date'][v[n-1]],stats[5,st],'s',color='r',alpha=0.5)
+        
+        de=stats[5,st]-stats[4,st]
+
+        ax[2].set_title(stnam+' elevation, change = '+str('%.0f'%de)+' m')
+
+        y=[stats[4,st],stats[5,st]]
+        ax[cc].plot(x, y, '--',c='b')
         
         coords_1 = (stats[0,st],stats[2,st])
         coords_2 = (stats[1,st],stats[3,st])
@@ -170,8 +183,10 @@ for st,stnam in enumerate(meta.name):
         duration = df['date'][v[n-1]] - df['date'][v[0]]                         # For build-in functions
         duration_in_s = duration.total_seconds()
         years[st] = divmod(duration_in_s, 86400)[0]/365.25
+        print(years[st])
 
-        if ly=='p': plt.savefig('./figs/'+stnam+'.png', dpi=72,bbox_inches = 'tight',pad_inches = 0)
+
+        if ly=='p': plt.savefig('./figs/'+stnam+'.png', dpi=72,bbox_inches = 'tight')
         if ly=='x':plt.show()
 
 
