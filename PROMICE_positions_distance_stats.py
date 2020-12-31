@@ -209,6 +209,7 @@ df2['elevation change, m']=df2['latest valid elevation, m']-df2['first valid ele
 df2["delta time"]=pd.Series(years[:])
 
 df2["displacement rate, m/y"]=df2["displacement, m"]/df2["delta time"]
+df2["displacement rate, m/y"][df2['site name']=='KAN_B']=np.nan
 df2['displacement, m'] = df2['displacement, m'].map(lambda x: '%.0f' % x)
 df2['elevation change, m'] = df2['elevation change, m'].map(lambda x: '%.0f' % x)
 df2['delta time'] = df2['delta time'].map(lambda x: '%.1f' % x)
@@ -223,4 +224,7 @@ df2['displacement rate, m/y'] = df2['displacement rate, m/y'].map(lambda x: '%.1
 if wo:df2.to_csv('./stats/PROMICE_positions_distance_stats.csv',sep=';')
 if wo:df2.to_excel('./stats/PROMICE_positions_distance_stats.xlsx')
 
-print("average displacement rate",df2["displacement rate, m/y"].mean(,axis=None, skipna=True)))
+print("average displacement rate",np.nanmean(df2["displacement rate, m/y"].astype(float)))
+print("average displacement rate",np.nanstd(df2["displacement rate, m/y"].astype(float)))
+print("elevation change, m",np.nanmean(df2["elevation change, m"].astype(float)))
+print("elevation change, m",np.nanstd(df2["elevation change, m"].astype(float)))
