@@ -1,4 +1,4 @@
-;name;start;end;delta time;first valid latitude, °N;latest valid latitude, °N;first valid longitude, °W;latest valid longitude, °W;displacement, m;displacement rate, m/y;elev0;elev1;elevation change, m
+;site name;first valid date;latest valid date;delta time;first valid latitude, °N;latest valid latitude, °N;first valid longitude, °W;latest valid longitude, °W;displacement, m;displacement rate, m/y;first valid elevation, m;latest valid elevation, m;elevation change, m
 0;KPC_L;2008-11-15;2020-06-15;11.6;79.9110;79.9108;24.0855;24.0816;80;6.9;380;366;-15
 1;KPC_U;2008-08-15;2020-06-15;11.8;79.8339;79.8348;25.1704;25.1636;170;14.3;868;867;-2
 2;SCO_L;2008-08-15;2017-07-15;8.9;72.2291;72.2224;26.8166;26.8181;749;84.1;473;459;-14

@@ -194,26 +194,26 @@ for st,stnam in enumerate(meta.name):
         if ly=='x':plt.show()
 
 
-df2 = pd.DataFrame(columns=['name','start','end','delta time','first valid latitude, °N','latest valid latitude, °N','first valid longitude, °W','latest valid longitude, °W','displacement, m','displacement rate, m/y','elev0','elev1','elevation change, m'])
-df2["name"]=pd.Series(meta.name)
-df2["start"]=pd.Series(date0[:])
-df2["end"]=pd.Series(date1[:])
+df2 = pd.DataFrame(columns=['site name','first valid date','latest valid date','delta time','first valid latitude, °N','latest valid latitude, °N','first valid longitude, °W','latest valid longitude, °W','displacement, m','displacement rate, m/y','first valid elevation, m','latest valid elevation, m','elevation change, m'])
+df2['site name']=pd.Series(meta.name)
+df2['first valid date']=pd.Series(date0[:])
+df2['latest valid date']=pd.Series(date1[:])
 df2['first valid latitude, °N']=pd.Series(stats[0,:])
 df2['latest valid latitude, °N']=pd.Series(stats[1,:])
 df2['first valid longitude, °W']=pd.Series(stats[2,:])
 df2['latest valid longitude, °W']=pd.Series(stats[3,:])
-df2["elev0"]=pd.Series(stats[4,:])
-df2["elev1"]=pd.Series(stats[5,:])
+df2['first valid elevation, m']=pd.Series(stats[4,:])
+df2['latest valid elevation, m']=pd.Series(stats[5,:])
 df2["displacement, m"]=pd.Series(stats[6,:])
-df2['elevation change, m']=df2["elev1"]-df2["elev0"]
+df2['elevation change, m']=df2['latest valid elevation, m']-df2['first valid elevation, m']
 df2["delta time"]=pd.Series(years[:])
 
 df2["displacement rate, m/y"]=df2["displacement, m"]/df2["delta time"]
 df2['displacement, m'] = df2['displacement, m'].map(lambda x: '%.0f' % x)
 df2['elevation change, m'] = df2['elevation change, m'].map(lambda x: '%.0f' % x)
 df2['delta time'] = df2['delta time'].map(lambda x: '%.1f' % x)
-df2['elev0'] = df2['elev0'].map(lambda x: '%.0f' % x)
-df2['elev1'] = df2['elev1'].map(lambda x: '%.0f' % x)
+df2['first valid elevation, m'] = df2['first valid elevation, m'].map(lambda x: '%.0f' % x)
+df2['latest valid elevation, m'] = df2['latest valid elevation, m'].map(lambda x: '%.0f' % x)
 df2['first valid latitude, °N'] = df2['first valid latitude, °N'].map(lambda x: '%.4f' % x)
 df2['latest valid latitude, °N'] = df2['latest valid latitude, °N'].map(lambda x: '%.4f' % x)
 df2['first valid longitude, °W'] = df2['first valid longitude, °W'].map(lambda x: '%.4f' % x)
@@ -222,3 +222,5 @@ df2['displacement rate, m/y'] = df2['displacement rate, m/y'].map(lambda x: '%.1
 
 if wo:df2.to_csv('./stats/PROMICE_positions_distance_stats.csv',sep=';')
 if wo:df2.to_excel('./stats/PROMICE_positions_distance_stats.xlsx')
+
+print("average displacement rate",df2["displacement rate, m/y"].mean(,axis=None, skipna=True)))
