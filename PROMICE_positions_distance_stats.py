@@ -15,8 +15,8 @@ import pandas as pd
 import numpy as np
 import geopy.distance
 
-th=1 ; th=2
-formatx='{x:,.3f}'; fs=24 ; fs=16
+th=1 ; th=2 # thickness
+formatx='{x:,.3f}'; fs=24 ; fs=16 # font size
 plt.rcParams["font.size"] = fs
 plt.rcParams['axes.facecolor'] = 'w'
 plt.rcParams['axes.edgecolor'] = 'k'
@@ -31,15 +31,16 @@ plt.rcParams['axes.linewidth'] = 1
 mult_legend=0.8
 axis_mult=1
 
-path0='/Users/jason/Dropbox/AW/'
 
-os.chdir('/Users/jason/Dropbox/AWS/PROMICE/PROMICE_Positions/')
+working_dir='/Users/jason/Dropbox/AWS/PROMICE/PROMICE_Positions/' # change this in your local system
+os.chdir(working_dir)
 
 # graphics layout option
 ly='p' # p for .png, x for console only
-wo=1
-write_fig=0
+wo=1 # write out stats
+write_fig=0 # write out figures
 
+# read site meta data
 meta=pd.read_csv('./meta/site_info.csv')
 # print(meta.columns)
 
@@ -49,6 +50,7 @@ date0=['']*len(meta)
 date1=['']*len(meta)
 years=np.zeros(len(meta))
 
+# loop over sites
 for st,stnam in enumerate(meta.name):
 # for st,stnam in enumerate(meta.name[0:2]):
 
@@ -192,14 +194,14 @@ for st,stnam in enumerate(meta.name):
         if ly=='x':plt.show()
 
 
-df2 = pd.DataFrame(columns=['name','start','end','delta time','lat0','lat1','lon0','lon1','displacement, m','displacement rate, m/y','elev0','elev1','elevation change, m'])
+df2 = pd.DataFrame(columns=['name','start','end','delta time','first valid latitude, °N','latest valid latitude, °N','first valid longitude, °W','latest valid longitude, °W','displacement, m','displacement rate, m/y','elev0','elev1','elevation change, m'])
 df2["name"]=pd.Series(meta.name)
 df2["start"]=pd.Series(date0[:])
 df2["end"]=pd.Series(date1[:])
-df2["lat0"]=pd.Series(stats[0,:])
-df2["lat1"]=pd.Series(stats[1,:])
-df2["lon0"]=pd.Series(stats[2,:])
-df2["lon1"]=pd.Series(stats[3,:])
+df2['first valid latitude, °N']=pd.Series(stats[0,:])
+df2['latest valid latitude, °N']=pd.Series(stats[1,:])
+df2['first valid longitude, °W']=pd.Series(stats[2,:])
+df2['latest valid longitude, °W']=pd.Series(stats[3,:])
 df2["elev0"]=pd.Series(stats[4,:])
 df2["elev1"]=pd.Series(stats[5,:])
 df2["displacement, m"]=pd.Series(stats[6,:])
@@ -212,10 +214,11 @@ df2['elevation change, m'] = df2['elevation change, m'].map(lambda x: '%.0f' % x
 df2['delta time'] = df2['delta time'].map(lambda x: '%.1f' % x)
 df2['elev0'] = df2['elev0'].map(lambda x: '%.0f' % x)
 df2['elev1'] = df2['elev1'].map(lambda x: '%.0f' % x)
-df2['lat0'] = df2['lat0'].map(lambda x: '%.4f' % x)
-df2['lat1'] = df2['lat1'].map(lambda x: '%.4f' % x)
-df2['lon0'] = df2['lon0'].map(lambda x: '%.4f' % x)
-df2['lon1'] = df2['lon1'].map(lambda x: '%.4f' % x)
-df2['displacement rate, m/y'] = df2['displacement rate, m/y'].map(lambda x: '%.0f' % x)
+df2['first valid latitude, °N'] = df2['first valid latitude, °N'].map(lambda x: '%.4f' % x)
+df2['latest valid latitude, °N'] = df2['latest valid latitude, °N'].map(lambda x: '%.4f' % x)
+df2['first valid longitude, °W'] = df2['first valid longitude, °W'].map(lambda x: '%.4f' % x)
+df2['latest valid longitude, °W'] = df2['latest valid longitude, °W'].map(lambda x: '%.4f' % x)
+df2['displacement rate, m/y'] = df2['displacement rate, m/y'].map(lambda x: '%.1f' % x)
 
 if wo:df2.to_csv('./stats/PROMICE_positions_distance_stats.csv',sep=';')
+if wo:df2.to_excel('./stats/PROMICE_positions_distance_stats.xlsx')
