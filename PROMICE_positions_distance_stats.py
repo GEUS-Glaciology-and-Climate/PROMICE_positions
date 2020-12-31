@@ -38,6 +38,7 @@ os.chdir('/Users/jason/Dropbox/AWS/PROMICE/PROMICE_Positions/')
 # graphics layout option
 ly='p' # p for .png, x for console only
 wo=1
+write_fig=0
 
 meta=pd.read_csv('./meta/site_info.csv')
 # print(meta.columns)
@@ -49,6 +50,7 @@ date1=['']*len(meta)
 years=np.zeros(len(meta))
 
 for st,stnam in enumerate(meta.name):
+# for st,stnam in enumerate(meta.name[0:2]):
 
     stnam=stnam.lstrip()
     fn='/Users/jeb/Google Drive/PROMICE/AWS_updates/'+stnam+'_month_v03_upd.txt'
@@ -186,11 +188,11 @@ for st,stnam in enumerate(meta.name):
         print(years[st])
 
 
-        if ly=='p': plt.savefig('./figs/'+stnam+'.png', dpi=72,bbox_inches = 'tight')
+        if ((ly=='p')&(write_fig)): plt.savefig('./figs/'+stnam+'.png', dpi=72,bbox_inches = 'tight')
         if ly=='x':plt.show()
 
 
-df2 = pd.DataFrame(columns=['name','start','end','delta time','lat0','lat1','lon0','lon1','displacement meters','elev0','elev1','delta elev'])
+df2 = pd.DataFrame(columns=['name','start','end','delta time','lat0','lat1','lon0','lon1','displacement, m','displacement rate, m/y','elev0','elev1','elevation change, m'])
 df2["name"]=pd.Series(meta.name)
 df2["start"]=pd.Series(date0[:])
 df2["end"]=pd.Series(date1[:])
@@ -200,8 +202,20 @@ df2["lon0"]=pd.Series(stats[2,:])
 df2["lon1"]=pd.Series(stats[3,:])
 df2["elev0"]=pd.Series(stats[4,:])
 df2["elev1"]=pd.Series(stats[5,:])
-df2["displacement meters"]=pd.Series(stats[6,:])
-df2["delta elev"]=df2["elev1"]-df2["elev0"]
+df2["displacement, m"]=pd.Series(stats[6,:])
+df2['elevation change, m']=df2["elev1"]-df2["elev0"]
 df2["delta time"]=pd.Series(years[:])
 
-if wo:df2.to_csv('./stats/PROMICE_positions_distance_stats.csv')
+df2["displacement rate, m/y"]=df2["displacement, m"]/df2["delta time"]
+df2['displacement, m'] = df2['displacement, m'].map(lambda x: '%.0f' % x)
+df2['elevation change, m'] = df2['elevation change, m'].map(lambda x: '%.0f' % x)
+df2['delta time'] = df2['delta time'].map(lambda x: '%.1f' % x)
+df2['elev0'] = df2['elev0'].map(lambda x: '%.0f' % x)
+df2['elev1'] = df2['elev1'].map(lambda x: '%.0f' % x)
+df2['lat0'] = df2['lat0'].map(lambda x: '%.4f' % x)
+df2['lat1'] = df2['lat1'].map(lambda x: '%.4f' % x)
+df2['lon0'] = df2['lon0'].map(lambda x: '%.4f' % x)
+df2['lon1'] = df2['lon1'].map(lambda x: '%.4f' % x)
+df2['displacement rate, m/y'] = df2['displacement rate, m/y'].map(lambda x: '%.0f' % x)
+
+if wo:df2.to_csv('./stats/PROMICE_positions_distance_stats.csv',sep=';')
