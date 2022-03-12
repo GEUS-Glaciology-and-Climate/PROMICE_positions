@@ -228,3 +228,40 @@ print("average displacement rate",np.nanmean(df2["displacement rate, m/y"].astyp
 print("average displacement rate",np.nanstd(df2["displacement rate, m/y"].astype(float)))
 print("elevation change, m",np.nanmean(df2["elevation change, m"].astype(float)))
 print("elevation change, m",np.nanstd(df2["elevation change, m"].astype(float)))
+
+#%%
+
+gcn=pd.read_csv('/Users/jason/Dropbox/AWS/GCNET/GCNet_positions/output/GCN_positions_distance_stats.csv',sep=';')
+gcn['network']='GCN GEUS'
+pro=pd.read_csv('/Users/jason/Dropbox/AWS/PROMICE/PROMICE_positions/stats/PROMICE_positions_distance_stats.csv',sep=';')
+pro['network']='PROMICE'
+
+df=pd.concat([pro,gcn],ignore_index=True, sort=False)
+df=df.rename(columns={"site name": "name"})
+print(df.columns)
+
+df = df.drop(df[df.name=='KAN_B'].index)
+
+print(df)
+
+all_old=pd.read_csv('/Users/jason/Dropbox/AWS/_merged/PROMICE_GC-Net_info.csv')
+all_old=all_old.rename(columns={"name": "name_long"})
+all_old=all_old.rename(columns={"name_short": "name"})
+all_old.columns
+
+df=df.rename(columns={"latest valid latitude, °N": "lat"})
+df=df.rename(columns={"latest valid longitude, °W": "lon"})
+df=df.rename(columns={"latest valid elevation, m": "elev"})
+
+
+for name in df.name:
+    # v=all_old.name==name
+    all_old = all_old.drop(all_old[all_old.name==name].index)
+    # print(name,v)
+
+df2=pd.concat([df,all_old],ignore_index=True, sort=False)
+
+df2=df2.drop(df2.columns[0], axis=1)
+# %%
+
+df2.to_csv('/Users/jason/Dropbox/AWS/PROMICE/PROMICE_positions/meta/positions_stats_PROMICE_GCN.csv',sep=';')
