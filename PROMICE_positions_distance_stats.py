@@ -265,3 +265,4 @@ df2=df2.drop(df2.columns[0], axis=1)
 # %%
 
 df2.to_csv('/Users/jason/Dropbox/AWS/PROMICE/PROMICE_positions/meta/positions_stats_PROMICE_GCN.csv',sep=';')
+df2.to_excel('/Users/jason/Dropbox/AWS/PROMICE/PROMICE_positions/meta/positions_stats_PROMICE_GCN.xlsx')
