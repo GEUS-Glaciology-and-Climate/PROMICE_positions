@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 
-@authors: Adrien Wehrlé, University of Zurich, Switzerland
-
+@authors:
+    Adrien Wehrlé, University of Zurich, Switzerland
+    Jason Box, GEUS
 
 """
 
